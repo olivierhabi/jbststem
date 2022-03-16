@@ -7,7 +7,7 @@ import { Listbox } from "@headlessui/react";
 const statusChoice = ["Dropped", "Passed"];
 
 export async function getServerSideProps({ params }) {
-  const res = await fetch(`http://localhost:3000/api/apply/${params.id}`, {
+  const res = await fetch(`${process.env.SITE_URL}/api/apply/${params.id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -102,7 +102,7 @@ const Application = (props) => {
                     <div>CV (pdf):</div>
                     <a
                       className="text-blue-700"
-                      href={`/${props.application.applicant.cvFile}`}
+                      href={props.application.applicant.cvFile}
                       alt="alt text"
                       target="_blank"
                       rel="noopener noreferrer"

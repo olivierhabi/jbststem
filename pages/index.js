@@ -25,7 +25,6 @@ export default function Home() {
     fetchData();
   }, []);
 
-  console.log(data, loading, "+++++++++++++++++++++++++++++++++++++++ DATA");
   return (
     <div>
       <div className="w-[100vw]">

@@ -6,6 +6,7 @@ import Dropzone from "react-dropzone-uploader";
 import destr from "destr";
 import { Validations } from "../src/components/utils/formValidation";
 import { ErrorMessage } from "../src/components/common/ErrorMessage";
+import { PickerOverlay, PickerInline, PickerDropPane } from "filestack-react";
 
 const Apply = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -20,29 +21,6 @@ const Apply = () => {
     formState: { errors },
     setError,
   } = useForm();
-
-  const getUploadParams = (data) => {
-    return {
-      // url: "http://localhost:3000/api/upload",
-      url: `${process.env.NEXT_PUBLIC_UPLOAD_URL}/${Date.now()}_${
-        data.file.name
-      }`,
-    };
-  };
-
-  const handleChangeStatus = (fileWithMeta, status, fileWithMeta1) => {
-    setErrorFile("");
-    if (fileWithMeta.xhr) {
-      console.log(fileWithMeta, "++++++++++++++++++++++++");
-      if (fileWithMeta.meta.status == "done") {
-        const filename = destr(fileWithMeta.xhr.response);
-        setCv(filename.file);
-      }
-      if (fileWithMeta.meta.status == "removed") {
-        setCv(undefined);
-      }
-    }
-  };
 
   const sendApplication = async ({
     firstName,
@@ -65,7 +43,7 @@ const Apply = () => {
           lastName: lastName,
           email: emailAddress,
           location: location,
-          cvFile: `application/${cv}`,
+          cvFile: cv.handle,
         }),
         headers: {
           "Content-Type": "application/json",
@@ -81,6 +59,7 @@ const Apply = () => {
       setIsLoading(false);
     }
   };
+
   return (
     <div>
       <div className="w-[100vw]">
@@ -128,19 +107,48 @@ const Apply = () => {
                       errorText={errors.location?.message}
                     />
                   </div>
-                  <div>
+                  <div className="flex flex-col">
                     <label className="font-semibold text-base text-black-default">
                       Upload Your CV (pdf only)
                     </label>
-                    <Dropzone
-                      getUploadParams={getUploadParams}
-                      onChangeStatus={handleChangeStatus}
-                      maxFiles={1}
-                      multiple={false}
-                      canCancel={false}
-                      inputContent="Drop A File"
-                      accept=".pdf"
-                    />
+                    <div className="my-3">
+                      {!cv && (
+                        <PickerDropPane
+                          apikey={process.env.NEXT_PUBLIC_UPLOAD_SECRET}
+                          onUploadDone={(res) => {
+                            setCv({
+                              handle: `https://cdn.filestackcontent.com/${res.filesUploaded[0].handle}`,
+                              name: res.filesUploaded[0].filename,
+                            });
+                          }}
+                        />
+                      )}
+                    </div>
+                    {cv && (
+                      <div className="bg-blue-400 h-[30px] rounded-xl flex flex-row items-center justify-between px-6">
+                        <div className="text-white font-bold">Olivier.pdf</div>
+                        <div
+                          className="cursor-pointer"
+                          onClick={() => setCv(undefined)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 text-white"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    )}
+
                     <ErrorMessage message={errorFile || ""} />
                   </div>
                   <div>
