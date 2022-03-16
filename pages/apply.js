@@ -21,14 +21,19 @@ const Apply = () => {
     setError,
   } = useForm();
 
-  const getUploadParams = () => {
-    return { url: `${process.env.NEXT_PUBLIC_SITE_URL}/api/upload` };
+  const getUploadParams = (data) => {
+    return {
+      // url: "http://localhost:3000/api/upload",
+      url: `${process.env.NEXT_PUBLIC_UPLOAD_URL}/${Date.now()}_${
+        data.file.name
+      }`,
+    };
   };
 
   const handleChangeStatus = (fileWithMeta, status, fileWithMeta1) => {
     setErrorFile("");
     if (fileWithMeta.xhr) {
-      console.log(fileWithMeta.meta.status);
+      console.log(fileWithMeta, "++++++++++++++++++++++++");
       if (fileWithMeta.meta.status == "done") {
         const filename = destr(fileWithMeta.xhr.response);
         setCv(filename.file);

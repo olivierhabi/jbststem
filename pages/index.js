@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
 import applicants from "../src/models/applicants";
 
 export default function Home() {
+  const router = useRouter();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -32,6 +34,12 @@ export default function Home() {
             <div className="flex justify-center text-[30px] pb-[30px]">
               View single Application
             </div>
+            <button
+              onClick={() => router.push("/apply")}
+              className="flex justify-center font-bold text-white flex-row space-x-3 bg-gray-400 py-2 w-[120px] px-[5px] rounded mb-4"
+            >
+              APPLY HERE
+            </button>
             <div className="flex justify-center h-full">
               {loading && !data && (
                 <div className="flex items-center">
